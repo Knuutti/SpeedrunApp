@@ -1,8 +1,8 @@
 package com.example.speedrunapp;
 
 public class Category {
-    String categoryId;
-    String categoryName;
+    private String categoryId;
+    private String categoryName;
 
     public Category(String id) {
         this.categoryId = id;

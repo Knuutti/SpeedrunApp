@@ -15,7 +15,15 @@ public class Leaderboard {
         return leaderboard;
     }
 
+    public void addRun(Run run){
+        runList.add(run);
+    }
+
     public ArrayList getRunList(){
-        return this.runList;
+        return runList;
+    }
+
+    public void clear() {
+        runList.clear();
     }
 }

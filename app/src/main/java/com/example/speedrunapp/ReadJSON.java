@@ -14,10 +14,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ReadJSON {
+
     private static ReadJSON readJSON;
-    Methods methods = Methods.getInstance();
+
     private ReadJSON(){}
 
     public static ReadJSON getInstance(){
@@ -27,14 +29,41 @@ public class ReadJSON {
         return readJSON;
     }
 
-    public Leaderboard loadLeaderboard(Game game, Category category){
-        Leaderboard leaderboard = readLeaderboardData(getLeaderboardJSON(game.getGameId(), category.getCategoryId()));
-        return leaderboard;
+    private String JsonToString(String urlString) {
+        String response = null;
+
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+
+            response = sb.toString();
+            in.close();
+            br.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
 
-    public Leaderboard readLeaderboardData(String leaderboardJSON){
+    public Leaderboard getLeaderboardData(Game game, Category category, int start, int end){
+
+        String leaderboardJSON = JsonToString("https://www.speedrun.com/api/v1/leaderboards/" + game.getGameId() + "/category/" + category.getCategoryId());
+
         Leaderboard leaderboard = Leaderboard.getInstance();
         leaderboard.clear();
+
+        String place = null;
+        String runId = null;
 
         if (leaderboardJSON != null) {
             try {
@@ -43,11 +72,16 @@ public class ReadJSON {
                 JSONObject data = (JSONObject) obj.get("data");
                 JSONArray runs = (JSONArray) data.get("runs");
 
-                for (int i = 0; i<runs.size() && i < 10; i++) {
+                for (int i = start; i<(runs.size()-start) && i<end; i++) {
                     JSONObject runObject = (JSONObject) runs.get(i);
-                    JSONObject run = (JSONObject) runObject.get("run");
+                    JSONObject runJson = (JSONObject) runObject.get("run");
 
-                    leaderboard.addRun(new Run(runObject.get("place").toString(), run.get("id").toString()));
+                    place = runObject.get("place").toString();
+                    runId = runJson.get("id").toString();
+
+                    Run run = getRunData(place, runId);
+
+                    leaderboard.addRun(run);
                 }
 
             } catch (ParseException e) {
@@ -57,139 +91,137 @@ public class ReadJSON {
         return leaderboard;
     }
 
-    public String getLeaderboardJSON(String game_id, String category_id){
-        String response = null;
+    // Method for creating a Run object from run id
+    public Run getRunData(String place, String runId) {
 
-        try {
-            URL url = new URL("https://www.speedrun.com/api/v1/leaderboards/" + game_id + "/category/" + category_id);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
+        String runJson = JsonToString("https://www.speedrun.com/api/v1/runs/" + runId);
+
+        String userId = null;
+        String gameId = null;
+        String date = null;
+        String time = null;
+        String username = null;
+
+        if (runJson != null) {
+            try {
+                JSONParser parser = new JSONParser();
+
+                JSONObject obj = (JSONObject) parser.parse(runJson);
+                JSONObject data = (JSONObject) obj.get("data");
+                JSONObject times = (JSONObject) data.get("times");
+                JSONArray players = (JSONArray) data.get("players");
+                JSONObject playerObject = (JSONObject) players.get(0);
+
+                gameId = data.get("game").toString();
+                date = data.get("date").toString();
+                time = times.get("realtime_t").toString();
+
+                // Checks if the runner has an account
+                if (playerObject.get("rel").toString().compareTo("user") == 0) {
+                    userId = playerObject.get("id").toString();
+                }
+                else {
+                    username = playerObject.get("name").toString();
+                }
+
+            } catch (ParseException | NullPointerException e) {
+                e.printStackTrace();
             }
-
-            response = sb.toString();
-            in.close();
-            br.close();
-
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
-        return response;
+        Run run = new Run(place, runId, gameId, userId, username, date, time);
+        return run;
     }
 
-    public String readUserData(String userJSON) {
-        String username = null;
+    // Method for creating a User object from user id
+    public User getUserData(String userId){
+
+        String userJSON = JsonToString("https://www.speedrun.com/api/v1/users/" + userId);
+
+        String username = "Player";
+        String country = "default";
+        String colorStart = "#FFFFFF";
+        String colorEnd = "#FFFFFF";
+
         if (userJSON != null) {
             try {
                 JSONParser parser = new JSONParser();
                 JSONObject obj = (JSONObject) parser.parse(userJSON);
                 JSONObject data = (JSONObject) obj.get("data");
                 JSONObject names = (JSONObject) data.get("names");
+                JSONObject nameStyle = (JSONObject) data.get("name-style");
+                JSONObject colorFrom = (JSONObject) nameStyle.get("color-from");
+                JSONObject colorTo = (JSONObject) nameStyle.get("color-to");
+                JSONObject location = (JSONObject) data.get("location");
+
                 username = names.get("international").toString();
+                colorEnd = colorTo.get("dark").toString();
+                colorStart = colorFrom.get("dark").toString();
 
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return username;
-    }
-
-    public String getUserDataJSON(String user_id){
-        String response = null;
-
-        try {
-            URL url = new URL("https://www.speedrun.com/api/v1/users/" + user_id);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-
-            response = sb.toString();
-            in.close();
-            br.close();
-
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return response;
-    }
-
-    public String[] readRunData(String run_data) {
-        String[] run_data_array = new String[4];
-        String user_id = null;
-        if (run_data != null) {
-            try {
-                JSONParser parser = new JSONParser();
-
-                JSONObject obj = (JSONObject) parser.parse(run_data);
-                JSONObject data = (JSONObject) obj.get("data");
-                JSONObject times = (JSONObject) data.get("times");
-                JSONArray players = (JSONArray) data.get("players");
-
-                for (int j = 0; j< players.size(); j++) {
-                    JSONObject playerObject = (JSONObject) players.get(j);
-                    user_id = playerObject.get("id").toString();
+                if (location != null) {
+                    JSONObject countryJson = (JSONObject) location.get("country");
+                    country = countryJson.get("code").toString();
+                }
+                else {
+                    country = "default";
                 }
 
-                run_data_array[0] = data.get("game").toString();
-                run_data_array[1] = data.get("date").toString();
-                run_data_array[2] = user_id;
-                run_data_array[3] = times.get("realtime_t").toString();
+            } catch (ParseException | NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+
+        User user = new User(userId, username, country, colorStart, colorEnd);
+
+        return user;
+    }
+
+    public ArrayList getCategoryData(String game_id) {
+        String categoryJSON = JsonToString("https://www.speedrun.com/api/v1/games/" + game_id + "/categories");
+        ArrayList<Category> categories = new ArrayList<>();
+        if (categoryJSON != null) {
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject obj = (JSONObject) parser.parse(categoryJSON);
+                JSONArray data = (JSONArray) obj.get("data");
+
+                for (int i = 0; i < data.size(); i++) {
+                    JSONObject categoryObj = (JSONObject) data.get(i);
+                    categories.add(new Category(categoryObj.get("id").toString()));
+                }
 
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        return run_data_array;
+        return categories;
     }
 
-    public String getRunDataJSON(String run_id){
-        String response = null;
+    public String[] getGameData(String game_id) {
+        String gameJSON = getGameDataJSON(game_id);
+        String[] data_array = new String[3];
 
-        try {
-            URL url = new URL("https://www.speedrun.com/api/v1/runs/" + run_id);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
+        if (gameJSON != null) {
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject obj = (JSONObject) parser.parse(gameJSON);
+                JSONObject data = (JSONObject) obj.get("data");
+                JSONObject names = (JSONObject) data.get("names");
+                JSONObject assets = (JSONObject) data.get("assets");
+                JSONObject cover = (JSONObject) assets.get("cover-medium");
+                data_array[0] = names.get("international").toString();
+                data_array[1] = cover.get("uri").toString();
+                data_array[2] = data.get("released").toString();
+
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-
-            response = sb.toString();
-            in.close();
-            br.close();
-
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        return data_array;
+    }
 
+    private String getGameDataJSON(String game_id){
+        String response = JsonToString("https://www.speedrun.com/api/v1/games/" + game_id);
         return response;
     }
+
 }

@@ -3,30 +3,64 @@ package com.example.speedrunapp;
 public class Run {
 
     private String run_id;
+    private User user;
     private String place;
     private String game_id;
     private String date;
-    private String user_id;
     private String username;
     private String time;
+    private String imgURL = "default";
 
     ReadJSON json = ReadJSON.getInstance();
     Methods methods = Methods.getInstance();
 
-    public Run(String place, String run_id){
-        String[] run_data = json.readRunData(json.getRunDataJSON(run_id));
+    // General builder
+    public Run(String place, String runId, String gameId, String userId, String username, String date, String time){
+        if (userId != null) {
+            this.user = json.getUserData(userId);
+        }
+        else {
+            this.user = new User(username);
+        }
+
         this.run_id = run_id;
         this.place = place;
-        this.game_id = run_data[0];
-        this.date = run_data[1];
-        this.user_id = run_data[2];
-        this.username = json.readUserData(json.getUserDataJSON(this.user_id));
-        this.time = methods.getRealtime(run_data[3]);
+        this.game_id = gameId;
+        this.date = date;
+        this.imgURL = "https://www.speedrun.com/images/flags/" + user.getCountry() + ".png";
+        this.time = methods.getRealtime(time);
+    }
+
+    // Builder for getting the header for the leaderboard
+    public Run(String username, String time, String imgURL) {
+        this.username = username;
+        this.time = time;
+        this.imgURL = imgURL;
     }
 
     @Override
     public String toString() {
         String print = this.place + "\t" + this.username + "\t" + this.time;
         return print;
+    }
+
+    public String getPlace(){
+        return this.place;
+    }
+
+    public User getUser(){
+        return this.user;
+    }
+
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public String getUsername(){
+        return this.username;
+    }
+
+    public String getTime(){
+        return this.time;
     }
 }

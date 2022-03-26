@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+
+    <TextView
+        android:id="@+id/tvPlace"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="40"
+        android:gravity="center"
+        android:text="Place"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF" />
+
+    <ImageView
+        android:id="@+id/ivFlag"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_weight="48"
+        android:gravity="center"
+        android:text="Place"
+        android:textAlignment="center"
+        android:translationX="11pt" />
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_weight="33"
+        android:clickable="true"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center|left"
+        android:onClick="backToMainScreen"
+        android:text="Player"
+        android:textAlignment="gravity"
+        android:textColor="#FFFFFF"
+        android:translationX="22pt" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_weight="30"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="Time"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:translationX="33pt" />
+
+
+</LinearLayout>

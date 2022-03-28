@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Leaderboard {
     private static Leaderboard leaderboard;
+    private int lastPage = 0;
     private ArrayList<Run> runList = new ArrayList<>();
 
     private Leaderboard(){}
@@ -17,6 +18,14 @@ public class Leaderboard {
 
     public void addRun(Run run){
         runList.add(run);
+    }
+
+    public int getLastPage(){
+        return lastPage;
+    }
+
+    public void setLastPage(int i){
+        lastPage = i;
     }
 
     public ArrayList getRunList(){

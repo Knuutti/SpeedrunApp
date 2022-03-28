@@ -1,15 +1,25 @@
 package com.example.speedrunapp;
 
 public class Category {
-    private String category_id;
+    private String categoryId;
     private String categoryName;
 
-    public Category(String category_id) {
-        this.category_id = category_id;
+    public Category(String categoryId, String categoryName) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
 
     }
 
+    @Override
+    public String toString() {
+        return categoryName;
+    }
+
     public String getCategoryId(){
-        return this.category_id;
+        return this.categoryId;
+    }
+
+    public String getCategoryName(){
+        return categoryName;
     }
 }

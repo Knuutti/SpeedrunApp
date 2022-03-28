@@ -39,7 +39,7 @@ public class ReadJSON {
             InputStream in = new BufferedInputStream(conn.getInputStream());
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line).append("\n");
             }
@@ -61,9 +61,10 @@ public class ReadJSON {
 
         Leaderboard leaderboard = Leaderboard.getInstance();
         leaderboard.clear();
+        System.out.println("tyhjätään");
 
-        String place = null;
-        String runId = null;
+        String place;
+        String runId;
 
         if (leaderboardJSON != null) {
             try {
@@ -72,7 +73,7 @@ public class ReadJSON {
                 JSONObject data = (JSONObject) obj.get("data");
                 JSONArray runs = (JSONArray) data.get("runs");
 
-                for (int i = start; i<(runs.size()-start) && i<end; i++) {
+                for (int i = start; i<(runs.size()) && i < end; i++) {
                     JSONObject runObject = (JSONObject) runs.get(i);
                     JSONObject runJson = (JSONObject) runObject.get("run");
 
@@ -84,10 +85,18 @@ public class ReadJSON {
                     leaderboard.addRun(run);
                 }
 
+                if (runs.size() < end) {
+                    leaderboard.setLastPage(1);
+                }
+                else {
+                    leaderboard.setLastPage(0);
+                }
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
+
         return leaderboard;
     }
 
@@ -186,7 +195,18 @@ public class ReadJSON {
 
                 for (int i = 0; i < data.size(); i++) {
                     JSONObject categoryObj = (JSONObject) data.get(i);
-                    categories.add(new Category(categoryObj.get("id").toString()));
+                    String id = categoryObj.get("id").toString();
+
+                    if (
+                            id.compareTo("5dwjw3gk") != 0 &&
+                            id.compareTo("z27wr5k0") != 0 &&
+                            id.compareTo("824g7n25") != 0 &&
+                            id.compareTo("9kvqlodg") != 0 &&
+                            id.compareTo("jdrqe5lk") != 0
+                    ) {
+                        String name = categoryObj.get("name").toString();
+                        categories.add(new Category(id, name));
+                    }
                 }
 
             } catch (ParseException e) {

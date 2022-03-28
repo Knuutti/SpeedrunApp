@@ -29,7 +29,12 @@ public class Methods {
             if (s < 10) {
                 seconds = "0" + seconds;
             }
-            time = hours + ":" + minutes + ":" + seconds;
+            if (hours.compareTo("0") != 0) {
+                time = hours + "h " + minutes + "m " + seconds + "s";
+            }
+            else {
+                time = minutes + "m " + seconds + "s";
+            }
         }
         catch (NumberFormatException e) {
             e.printStackTrace();

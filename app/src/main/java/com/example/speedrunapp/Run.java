@@ -4,7 +4,7 @@ public class Run {
 
     private String run_id;
     private User user;
-    private String place;
+    private String place = "0";
     private String game_id;
     private String date;
     private String username;

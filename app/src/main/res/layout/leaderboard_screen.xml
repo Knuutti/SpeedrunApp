@@ -1,20 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="#232323">
+
+    <Button
+        android:id="@+id/buttonForward"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/leaderboardList"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:onClick="nextPage"
+        android:visibility="visible"
+        app:icon="@android:drawable/ic_media_ff"
+        app:iconTint="#FFFFFF" />
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/buttonForward"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="5dp"
+        android:layout_toStartOf="@+id/buttonForward"
+        android:onClick="previousPage"
+        app:icon="@android:drawable/ic_media_rew" />
+
+    <TextView
+        android:id="@+id/gameTitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/gameCover1"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/gameCover1"
+        android:fontFamily="@font/ariblk"
+        android:text="Sly 3: Honor Among Thieves (2005)"
+        android:textColor="#FFFFFF"
+        android:textSize="13dp" />
+
+    <ImageView
+        android:id="@+id/gameCover1"
+        android:layout_width="66dp"
+        android:layout_height="78dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        tools:srcCompat="@drawable/cover" />
 
     <ListView
         android:id="@+id/leaderboardHeader"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="400dp" />
+        android:layout_below="@+id/tablayout"
+        android:layout_marginTop="0dp" />
 
     <ListView
         android:id="@+id/leaderboardList"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dp" />
+        android:layout_below="@+id/leaderboardHeader"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tablayout"
+        app:tabMode="scrollable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gameCover1"
+        android:layout_marginTop="20dp"
+        android:background="#191919"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbars="horizontal"
+        app:tabTextColor="#FFFFFF"></com.google.android.material.tabs.TabLayout>
+
 </RelativeLayout>

@@ -70,19 +70,21 @@ public class Game {
         return gameName;
     }
 
-    public String getCoverImageLink() {
-        return coverImageLink;
+    public String getReleaseYear(){
+        return releaseYear;
     }
 
-    public String getReleaseYear() {
-        return releaseYear;
+    public String getGameInfo() {
+        String info = gameName + " (" + releaseYear + ")";
+        return info;
+    }
+
+    public String getCoverImageLink() {
+        return coverImageLink;
     }
 
     public ArrayList<Category> getCategories() {
         return categories;
     }
 
-    public void addCategory(String categoryId) {
-        categories.add(new Category(categoryId));
-    }
 }

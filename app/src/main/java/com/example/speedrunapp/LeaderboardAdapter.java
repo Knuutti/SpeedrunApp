@@ -12,7 +12,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,7 +35,6 @@ public class LeaderboardAdapter extends ArrayAdapter<Run> {
 
     private Context mContext;
     private int mResource;
-    private int lastPosition = -1;
 
     private static class ViewHolder {
         TextView place;
@@ -65,8 +66,6 @@ public class LeaderboardAdapter extends ArrayAdapter<Run> {
             username = getItem(position).getUser().getUsername();
         }
 
-        final View result;
-
         ViewHolder holder;
 
         if (convertView == null) {
@@ -86,21 +85,17 @@ public class LeaderboardAdapter extends ArrayAdapter<Run> {
                     //Load an image to your IMAGEVIEW here
                 }
             });
-
-            result = convertView;
             convertView.setTag(holder);
         }
         else {
             holder = (ViewHolder) convertView.getTag();
-            result = convertView;
         }
 
-        lastPosition = position;
-
         if (getItem(position).getImgURL() == "default") {
+
             Glide.with(mContext)
                     .load("drawable://empty_flag.png")
-                    .override(300, 200)
+                    .override(0, 0)
                     .into(holder.flag);
         }
         else {
@@ -120,6 +115,9 @@ public class LeaderboardAdapter extends ArrayAdapter<Run> {
 
         holder.username.getPaint().setShader(textShader);
 
+        if (Integer.parseInt(holder.place.getText().toString()) % 2 == 1) {
+            convertView.setBackgroundColor(Color.parseColor("#171717"));
+        }
 
         return convertView;
     }

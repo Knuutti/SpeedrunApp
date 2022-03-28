@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+
+
+    <ImageView
+        android:id="@+id/ivCover"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="83"
+        android:gravity="center"
+        android:text="Place"
+        android:textAlignment="center"
+        app:srcCompat="@drawable/cover" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:translationX="5pt"
+        android:layout_weight="25">
+
+        <TextView
+            android:gravity="center"
+            android:text="Sly 3: Honor Among Thieves"
+            android:fontFamily="sans-serif-black"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/tvGame"/>
+
+        <TextView
+            android:gravity="center"
+            android:text="Released: 2005"
+            android:layout_width="match_parent"
+            android:fontFamily="sans-serif-black"
+            android:textColor="#FFFFFF"
+            android:textSize="5pt"
+            android:layout_height="30dp"
+            android:id="@+id/tvReleased"
+            android:layout_below="@+id/tvGame"/>
+    </LinearLayout>
+
+
+</LinearLayout>

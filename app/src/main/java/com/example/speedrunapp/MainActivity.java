@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -23,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private ArrayList<Game> gameList = new ArrayList<>();
-    private Spinner gameSpinner;
+
+    private ListView gameListView;
+
     String game_id;
 
     @Override
@@ -35,29 +39,20 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Button btnLoadBoards = (Button) findViewById(R.id.button);
-        btnLoadBoards.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Clicked btnLoadBoards");
-                game_id = gameList.get(gameSpinner.getSelectedItemPosition()).getGameId();
+        gameListView = findViewById(R.id.gameList);
 
+        gameListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(MainActivity.this, LeaderboardScreen.class);
-                intent.putExtra("game_id", game_id);
+                intent.putExtra("game_id", gameList.get(i).getGameId());
                 startActivity(intent);
             }
         });
-
         setGames();
-        setGameSpinner();
+        GameAdapter adapter = new GameAdapter(this, R.layout.adapter_view_layout_game, gameList);
+        gameListView.setAdapter(adapter);
 
-    }
-
-    private void setGameSpinner() {
-        gameSpinner = findViewById(R.id.gameSpinner);
-
-        ArrayAdapter<Game> gameAdapter = new ArrayAdapter<Game>(this,android.R.layout.simple_spinner_item, gameList);
-        gameSpinner.setAdapter(gameAdapter);
     }
 
     private void setGames() {
@@ -68,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         gameList.add(new Game("m1mxemj6")); // SLYFECTA
         gameList.add(new Game("9do8o0o1")); // SLY COOPER CE
     }
-
 
 
 

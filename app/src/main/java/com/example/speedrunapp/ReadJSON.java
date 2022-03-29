@@ -61,7 +61,50 @@ public class ReadJSON {
 
         Leaderboard leaderboard = Leaderboard.getInstance();
         leaderboard.clear();
-        System.out.println("tyhjätään");
+
+        String place;
+        String runId;
+
+        if (leaderboardJSON != null) {
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject obj = (JSONObject) parser.parse(leaderboardJSON);
+                JSONObject data = (JSONObject) obj.get("data");
+                JSONArray runs = (JSONArray) data.get("runs");
+
+                for (int i = start; i<(runs.size()) && i < end; i++) {
+                    JSONObject runObject = (JSONObject) runs.get(i);
+                    JSONObject runJson = (JSONObject) runObject.get("run");
+
+                    place = runObject.get("place").toString();
+                    runId = runJson.get("id").toString();
+
+                    Run run = getRunData(place, runId);
+
+                    leaderboard.addRun(run);
+                }
+
+                if (runs.size() < end) {
+                    leaderboard.setLastPage(1);
+                }
+                else {
+                    leaderboard.setLastPage(0);
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return leaderboard;
+    }
+
+    public Leaderboard getLevelLeaderboardData(Game game, Level level, Category category, int start, int end){
+
+        String leaderboardJSON = JsonToString("https://www.speedrun.com/api/v1/leaderboards/" + game.getGameId() + "/level/" + level.getLevelId() + "/" + category.getCategoryId());
+
+        Leaderboard leaderboard = Leaderboard.getInstance();
+        leaderboard.clear();
 
         String place;
         String runId;
@@ -108,7 +151,8 @@ public class ReadJSON {
         String userId = null;
         String gameId = null;
         String date = null;
-        String time = null;
+        String realtime = null;
+        String ingame = null;
         String username = null;
 
         if (runJson != null) {
@@ -123,7 +167,10 @@ public class ReadJSON {
 
                 gameId = data.get("game").toString();
                 date = data.get("date").toString();
-                time = times.get("realtime_t").toString();
+                realtime = times.get("realtime_t").toString();
+                if (realtime.compareTo("0") == 0) {
+                    ingame = times.get("ingame_t").toString();
+                }
 
                 // Checks if the runner has an account
                 if (playerObject.get("rel").toString().compareTo("user") == 0) {
@@ -137,7 +184,7 @@ public class ReadJSON {
                 e.printStackTrace();
             }
         }
-        Run run = new Run(place, runId, gameId, userId, username, date, time);
+        Run run = new Run(place, runId, gameId, userId, username, date, realtime, ingame);
         return run;
     }
 
@@ -214,6 +261,55 @@ public class ReadJSON {
             }
         }
         return categories;
+    }
+
+    public ArrayList getLevelCategoryData(String level_id) {
+        String categoryJSON = JsonToString("https://www.speedrun.com/api/v1/levels/" + level_id + "/categories");
+        ArrayList<Category> categories = new ArrayList<>();
+        if (categoryJSON != null) {
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject obj = (JSONObject) parser.parse(categoryJSON);
+                JSONArray data = (JSONArray) obj.get("data");
+
+                for (int i = 0; i < data.size(); i++) {
+                    JSONObject categoryObj = (JSONObject) data.get(i);
+                    String id = categoryObj.get("id").toString();
+                    String name = categoryObj.get("name").toString();
+                    categories.add(new Category(id, name));
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return categories;
+    }
+
+    public ArrayList getLevelData(String game_id) {
+        String categoryJSON = JsonToString("https://www.speedrun.com/api/v1/games/" + game_id + "/levels");
+        ArrayList<Level> levels = new ArrayList<>();
+        if (categoryJSON != null) {
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject obj = (JSONObject) parser.parse(categoryJSON);
+                JSONArray data = (JSONArray) obj.get("data");
+
+                for (int i = 0; i < data.size(); i++) {
+                    JSONObject categoryObj = (JSONObject) data.get(i);
+                    String id = categoryObj.get("id").toString();
+
+
+                    String name = categoryObj.get("name").toString();
+                    levels.add(new Level(id, name));
+
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return levels;
     }
 
     public String[] getGameData(String game_id) {

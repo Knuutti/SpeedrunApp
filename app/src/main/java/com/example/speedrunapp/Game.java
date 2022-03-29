@@ -46,7 +46,8 @@ public class Game {
     private String releaseYear;
 
     ReadJSON json = ReadJSON.getInstance();
-    private ArrayList<Category> categories = new ArrayList<>();
+    private ArrayList<Category> categories;
+    private ArrayList<Level> levels;
 
     public Game(String id){
         this.gameId = id;
@@ -54,7 +55,6 @@ public class Game {
         this.gameName = data[0];
         this.coverImageLink = data[1];
         this.releaseYear = data[2];
-        this.categories = json.getCategoryData(id);
     }
 
     @Override
@@ -64,6 +64,14 @@ public class Game {
 
     public String getGameId() {
         return gameId;
+    }
+
+    public void setCategories(){
+        categories = json.getCategoryData(gameId);
+    }
+
+    public void setLevels(){
+        levels = json.getLevelData(gameId);
     }
 
     public String getGameName() {
@@ -85,6 +93,10 @@ public class Game {
 
     public ArrayList<Category> getCategories() {
         return categories;
+    }
+
+    public ArrayList<Level> getLevels() {
+        return levels;
     }
 
 }

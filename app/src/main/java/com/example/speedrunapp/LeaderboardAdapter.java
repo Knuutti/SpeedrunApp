@@ -60,7 +60,7 @@ public class LeaderboardAdapter extends ArrayAdapter<Run> {
         String colorStart = "#FFFFFF";
         String colorEnd = "#FFFFFF";
 
-        if (getItem(position).getTime() != "Time") {
+        if (time != "Time") {
             colorStart = getItem(position).getUser().getColorStart();
             colorEnd = getItem(position).getUser().getColorEnd();
             username = getItem(position).getUser().getUsername();
@@ -82,40 +82,43 @@ public class LeaderboardAdapter extends ArrayAdapter<Run> {
                 @Override
                 public void onGlobalLayout() {
                     holder.flag.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    //Load an image to your IMAGEVIEW here
+
+                    // If user doesn't have a country, they won't have a flag
+                    if (imgURL.compareTo("https://www.speedrun.com/images/flags/default.png") == 0) {
+                        holder.username.setTranslationX(-30);
+                    }
+                    // Other users get a flag next to their name
+                    else {
+                        Glide.with(mContext)
+                                .load(imgURL)
+                                .override(300, 200)
+                                .into(holder.flag);
+                    }
+
                 }
             });
+
             convertView.setTag(holder);
+
         }
         else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (getItem(position).getImgURL() == "default") {
-
-            Glide.with(mContext)
-                    .load("drawable://empty_flag.png")
-                    .override(0, 0)
-                    .into(holder.flag);
-        }
-        else {
-            Glide.with(mContext)
-                    .load(imgURL)
-                    .override(300, 200)
-                    .into(holder.flag);
-        }
-
+        // Setting up correct info for each run
         holder.place.setText(place);
         holder.username.setText(username);
         holder.time.setText(time);
+
+        // Setting up the color (gradient) for each player
         holder.username.setTextColor(Color.parseColor(colorStart));
         Shader textShader = new LinearGradient(0, 0, holder.username.getPaint().measureText(holder.username.getText().toString()), holder.username.getTextSize(),
                 new int[]{Color.parseColor(colorStart), Color.parseColor(colorEnd)},
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
-
         holder.username.getPaint().setShader(textShader);
 
-        if (Integer.parseInt(holder.place.getText().toString()) % 2 == 1) {
+        // Condition for which background the run should have
+        if (position % 2 == 0 && getItem(position).getTime() != "Time") {
             convertView.setBackgroundColor(Color.parseColor("#171717"));
         }
 

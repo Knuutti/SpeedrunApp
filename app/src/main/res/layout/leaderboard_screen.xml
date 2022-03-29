@@ -4,15 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#232323">
+    android:background="#232323"
+    android:scrollbars="vertical">
 
     <Button
-        android:id="@+id/buttonForward"
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnPrevious"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="0dp"
+        android:onClick="backToMainScreen"
+        android:text="GAME MENU" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tlLevels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivGameImage"
+        android:layout_marginTop="20dp"
+        android:background="#191919"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbars="horizontal"
+        app:tabIndicatorColor="#FFFFFF"
+        app:tabMode="scrollable"
+        app:tabTextAppearance="@style/category_tab_text"
+        app:tabTextColor="#FFFFFF"></com.google.android.material.tabs.TabLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tlLeaderboards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvGameTitle"
+        android:layout_alignBottom="@+id/ivGameImage"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
+        android:background="#232323"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbars="horizontal"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="#FFFFFF"
+        app:tabMinWidth="5dp"
+        app:tabMode="scrollable"
+        app:tabTextAppearance="@style/leaderboards_tab_text"
+        app:tabTextColor="#FFFFFF"></com.google.android.material.tabs.TabLayout>
+
+    <Button
+        android:id="@+id/btnNext"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/leaderboardList"
+        android:layout_below="@+id/lvLeaderboard"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:onClick="nextPage"
         android:visibility="visible"
@@ -20,31 +64,31 @@
         app:iconTint="#FFFFFF" />
 
     <Button
-        android:id="@+id/buttonBack"
+        android:id="@+id/btnPrevious"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/buttonForward"
+        android:layout_alignTop="@+id/btnNext"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="5dp"
-        android:layout_toStartOf="@+id/buttonForward"
+        android:layout_toStartOf="@+id/btnNext"
         android:onClick="previousPage"
         app:icon="@android:drawable/ic_media_rew" />
 
     <TextView
-        android:id="@+id/gameTitle1"
+        android:id="@+id/tvGameTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/gameCover1"
+        android:layout_alignTop="@+id/ivGameImage"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/gameCover1"
-        android:fontFamily="@font/ariblk"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@+id/ivGameImage"
+        android:fontFamily="@font/saicond"
         android:text="Sly 3: Honor Among Thieves (2005)"
         android:textColor="#FFFFFF"
-        android:textSize="13dp" />
+        android:textSize="18dp" />
 
     <ImageView
-        android:id="@+id/gameCover1"
+        android:id="@+id/ivGameImage"
         android:layout_width="66dp"
         android:layout_height="78dp"
         android:layout_alignParentStart="true"
@@ -54,31 +98,36 @@
         tools:srcCompat="@drawable/cover" />
 
     <ListView
-        android:id="@+id/leaderboardHeader"
+        android:id="@+id/lvLeaderboardHeader"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_below="@+id/tablayout"
-        android:layout_marginTop="0dp" />
+        android:layout_below="@+id/tlCategories"
+        android:layout_marginTop="0dp"
+        android:scrollbars="none" />
 
     <ListView
-        android:id="@+id/leaderboardList"
+        android:id="@+id/lvLeaderboard"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_below="@+id/leaderboardHeader"
+        android:layout_height="378dp"
+        android:layout_below="@+id/lvLeaderboardHeader"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp" />
+        android:layout_marginTop="0dp"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tablayout"
-        app:tabMode="scrollable"
+        android:id="@+id/tlCategories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/gameCover1"
+        android:layout_below="@+id/ivGameImage"
         android:layout_marginTop="20dp"
         android:background="#191919"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbars="horizontal"
+        app:tabIndicatorColor="#FFFFFF"
+        app:tabMode="scrollable"
+        app:tabTextAppearance="@style/category_tab_text"
         app:tabTextColor="#FFFFFF"></com.google.android.material.tabs.TabLayout>
 
 </RelativeLayout>

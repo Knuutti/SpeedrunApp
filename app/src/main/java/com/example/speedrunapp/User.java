@@ -27,14 +27,6 @@ public class User {
         return username;
     }
 
-    public void setColorStart(String colorStart) {
-        this.colorStart = colorStart;
-    }
-
-    public void setColorEnd(String colorEnd) {
-        this.colorEnd = colorEnd;
-    }
-
     public String getCountry() {
         return country;
     }

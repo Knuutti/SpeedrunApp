@@ -28,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView gameListView;
 
-    String game_id;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
